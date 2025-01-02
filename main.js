@@ -46,3 +46,70 @@ Jeigu isLoggedIn statusas yra false, tuomet h1 tekstas turi būti logout metodo 
 
 Kiekvieną kartą paspaudus formos submit mygtuką visas papildomas tekstas turi išsivalyti.
 */
+class User {
+  constructor(name, email) {
+    this.name = name;
+    this.email = email;
+    this.isLoggedIn = false;
+  }
+
+  toggleLoginStatus() {
+    this.isLoggedIn = !this.isLoggedIn;
+  }
+
+  login() {
+    return `Welcome, ${this.name}`;
+  }
+
+  logout() {
+    return "See ya next time!";
+  }
+}
+
+document.querySelector("form").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  // Get form values
+  const email = event.target.elements.email.value;
+  const name = event.target.elements.name.value;
+
+  // Create a new User object
+  const user = new User(name, email);
+
+  // Toggle the login status
+  user.toggleLoginStatus();
+  console.log(user.isLoggedIn); // Check the status in the console
+
+  // Create the message container
+  const messageDiv = document.querySelector(".message");
+  messageDiv.innerHTML = ""; // Clear any previous content
+
+  if (user.isLoggedIn) {
+    // If the user is logged in, create the login message and logout button
+    const welcomeMessage = document.createElement("h1");
+    welcomeMessage.textContent = user.login();
+    messageDiv.appendChild(welcomeMessage);
+
+    const logoutButton = document.createElement("button");
+    logoutButton.textContent = "Logout";
+    messageDiv.appendChild(logoutButton);
+
+    // Add the logout functionality
+    logoutButton.addEventListener("click", function () {
+      user.toggleLoginStatus();
+      messageDiv.innerHTML = ""; // Clear previous content
+
+      const logoutMessage = document.createElement("h1");
+      logoutMessage.textContent = user.logout();
+      messageDiv.appendChild(logoutMessage);
+    });
+  } else {
+    // If the user is logged out, display a logout message
+    const logoutMessage = document.createElement("h1");
+    logoutMessage.textContent = user.logout();
+    messageDiv.appendChild(logoutMessage);
+  }
+
+  // Clear form inputs
+  event.target.reset();
+});
